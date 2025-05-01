@@ -12,13 +12,22 @@ $paths = @()
 foreach ($window in $explorers) {
     try {
         $folder = $window.Document.Folder.Self.Path
-        if ($folder) {
+        # Filtrer les entrées avec les identifiants spéciaux GUID/CLSID
+        if ($folder -and -not ($folder -like "::{*}")) {
             $paths += $folder
+            Write-Host "Chemin ajouté: $folder"
+        } else {
+            Write-Host "Chemin ignoré (GUID spécial): $folder"
         }
     } catch {
-        # ignore erreurs
+        Write-Host "Erreur lors de la récupération d'un chemin: $_"
     }
 }
 
-$paths | Set-Content -Encoding UTF8 -Path $saveFile
-Write-Host "Chemins sauvegardés dans $saveFile"
+# Vérifier qu'on a des chemins à sauvegarder
+if ($paths.Count -gt 0) {
+    $paths | Set-Content -Encoding UTF8 -Path $saveFile
+    Write-Host "Chemins sauvegardés dans $saveFile ($($paths.Count) chemins)"
+} else {
+    Write-Host "Aucun chemin valide trouvé, fichier non sauvegardé"
+}

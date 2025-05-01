@@ -1,55 +1,90 @@
 #NoEnv
+#SingleInstance Force
+#NoTrayIcon
 SendMode Input
 SetWorkingDir %A_ScriptDir%
 SetTitleMatchMode, 2
 
-; Chemin du fichier contenant les dossiers
-saveFile := A_UserName "\explorateur_fenetres.txt"
-fullPath := "C:\Users\" saveFile
+; Chemin du fichier contenant les dossiers - Chemin absolu pour éviter les problèmes
+fullPath := "C:\Users\User\explorateur_fenetres.txt"
 
 ; Lire les chemins
 if !FileExist(fullPath) {
-    MsgBox, Fichier introuvable: %fullPath%
+    MsgBox, 16, Erreur, Fichier de session introuvable: %fullPath%
     ExitApp
 }
 
+; Lire et nettoyer le contenu du fichier
 FileRead, folderList, %fullPath%
+folderList := RegExReplace(folderList, "`r`n", "`n") ; Standardiser les fins de ligne
+folderList := RegExReplace(folderList, "`n$", "") ; Supprimer la dernière ligne vide si présente
 folders := StrSplit(folderList, "`n")
 
-if (folders.Length() < 1) {
-    MsgBox, Aucun dossier à restaurer.
+; Vérifier qu'il y a au moins un dossier valide
+validFolders := 0
+Loop % folders.Length() {
+    folder := Trim(folders[A_Index])
+    if (folder != "" && !InStr(folder, "::")) {
+        validFolders += 1
+    }
+}
+
+if (validFolders < 1) {
+    MsgBox, 16, Erreur, Aucun dossier valide trouvé dans le fichier.
     ExitApp
+}
+
+; Trouver le premier dossier valide
+firstFolder := ""
+for i, folder in folders {
+    folder := Trim(folder)
+    if (folder != "" && !InStr(folder, "::")) {
+        firstFolder := folder
+        break
+    }
 }
 
 ; Ouvrir le premier dossier dans une fenêtre
-firstFolder := folders[1]
-Run, explorer.exe "%firstFolder%"
-Sleep, 1000
-
-; Passer aux dossiers suivants
-Loop % folders.Length() {
-    if (A_Index = 1)
-        continue  ; déjà ouvert
-
-    folder := folders[A_Index]
-    if folder = ""  ; ignorer les lignes vides
-        continue
-
-    ; Simuler Ctrl+T pour nouvel onglet
-    Send ^t
-    Sleep 100
-
-    ; Aller dans la barre d'adresse
-    Send ^l
-    Sleep 100
-
-    ; Coller le chemin
-    Send %folder%
-    Sleep 100
-
-    ; Entrer
-    Send {Enter}
-    Sleep 100
+if (firstFolder) {
+    Run, explorer.exe "%firstFolder%"
+    
+    ; Attendre que l'explorateur soit ouvert
+    WinWaitActive, ahk_class CabinetWClass,, 3
+    if ErrorLevel {
+        MsgBox, 16, Erreur, Impossible d'ouvrir le premier dossier.
+        ExitApp
+    }
+    
+    Sleep, 1000
+    
+    ; Passer aux dossiers suivants
+    for i, folder in folders {
+        folder := Trim(folder)
+        
+        ; Ignorer les entrées vides et le premier dossier (déjà ouvert)
+        if (folder = "" || folder = firstFolder || InStr(folder, "::"))
+            continue
+            
+        ; S'assurer que l'explorateur est actif
+        WinActivate, ahk_class CabinetWClass
+        Sleep, 200
+        
+        ; Simuler Ctrl+T pour nouvel onglet
+        Send ^t
+        Sleep, 500
+        
+        ; Aller dans la barre d'adresse
+        Send ^l
+        Sleep, 300
+        
+        ; Coller le chemin
+        SendInput % folder
+        Sleep, 300
+        
+        ; Entrer
+        Send {Enter}
+        Sleep, 200
+    }
 }
 
 ExitApp
