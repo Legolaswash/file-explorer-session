@@ -24,3 +24,4 @@ Thumbs.db
 .Rhistory
 build/
 node_modules/
+archives/
