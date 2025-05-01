@@ -31,18 +31,19 @@ Le projet utilise une combinaison de technologies pour contourner les limitation
 
 - **Simulation d'interface utilisateur** : En l'absence d'API officielle pour les onglets de l'Explorateur de fichiers Windows 11, la solution repose sur l'automatisation de séquences de touches
 - **PowerShell uniquement pour la sauvegarde** : Le script PowerShell alternatif pour la restauration (`restaure_explorateur.ps1`) ne peut ouvrir que des fenêtres séparées et non des onglets
+- **Timing de sauvegarde** : Actuellement pour l'automatisation, il faudrait déclencher bien le script de sauvegarde, AVANT la fermeture des fenêtres, détecter un "before closure", sauvegarder puis fermer normalement.
+
+## 🔮 Améliorations futures
+
+Des pistes sont possibles via du C++ et C#, en interrogeant les différents éléments Windows, en l'absence d'API déjà existantes. Cela rendrait aussi possible de ne pas passer par AutoHotkey pour la restauration et directement via un script beaucoup plus discret et propre.
 
 ## 📌 Installation
 
 1. Clonez ce dépôt dans un dossier de votre choix
 2. Assurez-vous qu'AutoHotkey est installé sur votre système
-3. Lancez explorer_watcher.ahk pour démarrer la surveillance
-4. Pour un démarrage automatique avec Windows, créez un raccourci dans le dossier de démarrage
+3. Lancer "sauvegarde_explorateur.ps1" avant de fermer l'explorer
+4. Lancer "restaure_explorateur.ahk" pour la restauration
 
 ## 🔄 Contributions
 
 Les contributions sont les bienvenues ! En particulier, si vous trouvez une méthode plus directe pour manipuler les onglets de l'Explorateur via une API ou une autre approche.
-
----
-
-*Note: Cette solution contourne les limitations actuelles de l'API Windows. Si Microsoft expose une API officielle pour les onglets de l'Explorateur à l'avenir, ce projet pourra être mis à jour pour utiliser ces méthodes directes.*

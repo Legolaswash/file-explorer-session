@@ -47,44 +47,30 @@ for i, folder in folders {
 ; Ouvrir le premier dossier dans une fenêtre
 if (firstFolder) {
     Run, explorer.exe "%firstFolder%"
-    
     ; Attendre que l'explorateur soit ouvert
     WinWaitActive, ahk_class CabinetWClass,, 3
     if ErrorLevel {
         MsgBox, 16, Erreur, Impossible d'ouvrir le premier dossier.
         ExitApp
     }
-    
     Sleep, 1000
-    
     ; Passer aux dossiers suivants
     for i, folder in folders {
         folder := Trim(folder)
-        
         ; Ignorer les entrées vides et le premier dossier (déjà ouvert)
         if (folder = "" || folder = firstFolder || InStr(folder, "::"))
             continue
-            
         ; S'assurer que l'explorateur est actif
         WinActivate, ahk_class CabinetWClass
         Sleep, 200
-        
-        ; Simuler Ctrl+T pour nouvel onglet
-        Send ^t
+        Send ^t ; Ctrl+T > nouvel onglet
         Sleep, 500
-        
-        ; Aller dans la barre d'adresse
-        Send ^l
+        Send ^l ; Aller dans la barre d'adresse
         Sleep, 300
-        
-        ; Coller le chemin
-        SendInput % folder
+        SendInput % folder ; Coller le chemin
         Sleep, 300
-        
-        ; Entrer
-        Send {Enter}
+        Send {Enter} ; Enter
         Sleep, 200
     }
 }
-
 ExitApp
