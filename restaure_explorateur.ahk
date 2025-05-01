@@ -37,19 +37,19 @@ Loop % folders.Length() {
 
     ; Simuler Ctrl+T pour nouvel onglet
     Send ^t
-    Sleep 300
+    Sleep 100
 
     ; Aller dans la barre d'adresse
     Send ^l
-    Sleep 200
+    Sleep 100
 
     ; Coller le chemin
     Send %folder%
-    Sleep 200
+    Sleep 100
 
     ; Entrer
     Send {Enter}
-    Sleep 500
+    Sleep 100
 }
 
 ExitApp
