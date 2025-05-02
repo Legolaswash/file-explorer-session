@@ -47,3 +47,12 @@ Des pistes sont possibles via du C++ et C#, en interrogeant les différents él�
 ## 🔄 Contributions
 
 Les contributions sont les bienvenues ! En particulier, si vous trouvez une méthode plus directe pour manipuler les onglets de l'Explorateur via une API ou une autre approche.
+
+<!--
+Pistes : 
+ https://www.reddit.com/r/windows/comments/1d4a58s/fun_fact_you_can_still_get_the_windows_10/ 
+ https://github.com/w4po/ExplorerTabUtility
+ https://learn.microsoft.com/en-us/windows/win32/shell/developing-with-windows-explorer
+ https://www.reddit.com/r/Windows11/comments/1134izg/file_explorer_will_soon_be_a_windows_app_sdk_app/
+ https://github.com/microsoft/winfile
+-->
